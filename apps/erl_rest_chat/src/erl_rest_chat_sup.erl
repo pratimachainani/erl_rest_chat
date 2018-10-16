@@ -13,8 +13,10 @@
 start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
-%% supervisor.
+%%====================================================================
+%% Supervisor callbacks
+%%====================================================================
 
 init([]) ->
-    Procs = [],
-    {ok, {{one_for_one, 10, 10}, Procs}}.
+    MsgServ = {emqttc_server, {emqttc_server, start_link, [[],[]]}, permanent, 10000, worker, [emqttc_server]},
+    {ok, { {one_for_one, 0, 1}, [MsgServ]} }.
