@@ -1,0 +1,5 @@
+#!/bin/bash
+
+rm -rf _build && rebar3 clean && rebar3 compile && rebar3 release
+
+_build/default/rel/erl_rest_chat/bin/erl_rest_chat console
