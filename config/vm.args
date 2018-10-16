@@ -1,0 +1,6 @@
+-sname erl_rest_chat
+
+-setcookie erl_rest_chat_cookie
+
++K true
++A30

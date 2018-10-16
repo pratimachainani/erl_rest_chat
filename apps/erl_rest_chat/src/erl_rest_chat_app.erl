@@ -1,9 +1,9 @@
 %%%-------------------------------------------------------------------
-%% @doc rest_hello_world public API
+%% @doc erl_rest_chat public API
 %% @end
 %%%-------------------------------------------------------------------
 
--module(rest_hello_world_app).
+-module(erl_rest_chat_app).
 
 -behaviour(application).
 
@@ -28,7 +28,7 @@ start(_Type, _Args) ->
 
   {ok, _} = cowboy:start_clear(http, [{port, 8001}], #{env => #{dispatch => Dispatch}}),
 
-    rest_hello_world_sup:start_link().
+    erl_rest_chat_sup:start_link().
 
 %%--------------------------------------------------------------------
 stop(_State) ->

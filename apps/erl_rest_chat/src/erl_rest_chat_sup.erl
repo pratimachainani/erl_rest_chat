@@ -1,4 +1,4 @@
--module(rest_hello_world_sup).
+-module(erl_rest_chat_sup).
 -behaviour(supervisor).
 
 %% API.
