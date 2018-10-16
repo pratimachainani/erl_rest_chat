@@ -43,46 +43,29 @@ handle(Req, State = #state{op=Op}) ->
     <<"POST">> ->
       io:fwrite("in POST ~n"),
       case Op of
-        hello ->
-          io:fwrite("in hello ~n");
         subscribe ->
           io:fwrite("in subscribe ~n"),
           Topic = cowboy_req:binding(topic, Req),
           QoS = cowboy_req:binding(qos, Req),
+          io:fwrite("QoS: ~p ~n", [QoS]),
+          io:fwrite("list_to_integer(binary_to_list(Qos)): ~p ~n~n", [list_to_integer(binary_to_list(QoS))]),
+          emqttc_server ! {subscribe, Topic, list_to_integer(binary_to_list(QoS))},
+          Body = <<"<h2>Subscribed!</h2>">>,
           io:fwrite("in subscribe, topic: ~p qos: ~p ~n", [Topic,QoS]);
         publish ->
           io:fwrite("in publish ~n"),
           Topic = cowboy_req:binding(topic, Req),
           Message = cowboy_req:binding(message, Req),
           QoS = cowboy_req:binding(qos, Req),
+          emqttc_server ! {publish, Topic, Message, list_to_integer(binary_to_list(QoS))},
+          Body = <<"<h2>Published!</h2>">>,
           io:fwrite("in publish, topic: ~p qos: ~p message: ~p ~n", [Topic,QoS, Message]);
         read ->
-          io:fwrite("in read")
-      end,
-      Body = <<"<h1>This is a response for POST</h1>">>;
+          io:fwrite("in read"),
+          Body = <<"<h2>Read Message</h2>">>
+      end;
     <<"GET">> ->
-      io:fwrite("in GET ~n"),
-      case Op of
-        hello ->
-          io:fwrite("in hello ~n");
-        subscribe ->
-          io:fwrite("in subscribe ~n"),
-          Topic = cowboy_req:binding(topic, Req),
-          QoS = cowboy_req:binding(qos, Req),
-          io:fwrite("in subscribe, topic: ~p qos: ~p ~n", [Topic,QoS]);
-        publish ->
-          io:fwrite("in publish ~n"),
-          Topic = cowboy_req:binding(topic, Req),
-          Message = cowboy_req:binding(message, Req),
-          QoS = cowboy_req:binding(qos, Req),
-          io:fwrite("in publish, topic: ~p qos: ~p message: ~p ~n", [Topic,QoS, Message]);
-        read ->
-          io:fwrite("in read")
-      end,
-      Body = <<"<h1>This is a response for GET</h1>">>;
-    _ ->
-      io:fwrite("in default"),
-      Body = <<"<h1>This is a response for other methods</h1>">>
+      Body = <<"<h1>This is a response for GET</h1>">>
   end,
   {ok, Req2} = cowboy_req:reply(200, #{}, Body, Req),
   {Body, Req2, State}.

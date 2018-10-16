@@ -19,7 +19,6 @@ start(_Type, _Args) ->
   Dispatch = cowboy_router:compile([
     {'_',
       [
-        {"/hello", route_handler, [{op, hello}]},
         {"/subscribe/:topic/:qos", route_handler, [{op, subscribe}]},
         {"/publish/:topic/:message/:qos", route_handler, [{op, publish}]},
         {"/read/:topic/:message/:qos", route_handler, [{op, read}]}

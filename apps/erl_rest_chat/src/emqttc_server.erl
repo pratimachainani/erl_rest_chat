@@ -68,6 +68,15 @@ handle_info({mqttc, C, connected}, State = #state{recipient = C}) ->
   io:format("Client ~p is connected~n", [C]),
   {noreply, State};
 
+handle_info({subscribe, Topic, QoS}, State = #state{recipient = C}) ->
+  emqttc:subscribe(C, list_to_binary([Topic]), QoS),
+  {noreply, State};
+
+
+handle_info({publish, Topic, Message, QoS}, State = #state{recipient = C}) ->
+  emqttc:publish(C, list_to_binary([Topic]), list_to_binary([Message]), QoS),
+  {noreply, State};
+
 handle_info({publish, Topic, Payload}, State) ->
   io:format("Message from ~s: ~p~n", [Topic, Payload]),
   {noreply, State}.
